@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"datagateway/internal/model"
 	"datagateway/proto/userpb"
 	"encoding/json"
@@ -34,7 +35,7 @@ func toProtoUser(u *model.User) *userpb.User {
 	}
 }
 
-func (s *UserServiceServer) CreateUser(req *userpb.CreateUserRequest) (*userpb.Response, error) {
+func (s *UserServiceServer) CreateUser(ctx context.Context, req *userpb.CreateUserRequest) (*userpb.Response, error) {
 	name := strings.TrimSpace(req.GetName())
 	email := strings.TrimSpace(req.GetEmail())
 
@@ -64,7 +65,7 @@ func (s *UserServiceServer) CreateUser(req *userpb.CreateUserRequest) (*userpb.R
 	return makeResponse(0, "OK", nil)
 }
 
-func (s *UserServiceServer) GetUser(req *userpb.GetUserRequest) (*userpb.Response, error) {
+func (s *UserServiceServer) GetUser(ctx context.Context, req *userpb.GetUserRequest) (*userpb.Response, error) {
 	if req.GetId() == 0 {
 		return makeResponse(400, "ID is required", nil)
 	}
@@ -80,7 +81,7 @@ func (s *UserServiceServer) GetUser(req *userpb.GetUserRequest) (*userpb.Respons
 	return makeResponse(0, "OK", toProtoUser(&u))
 }
 
-func (s *UserServiceServer) UpdateUser(req *userpb.UpdateUserRequest) (*userpb.Response, error) {
+func (s *UserServiceServer) UpdateUser(ctx context.Context, req *userpb.UpdateUserRequest) (*userpb.Response, error) {
 	if req.GetId() == 0 {
 		return makeResponse(400, "ID is required", nil)
 	}
@@ -114,7 +115,7 @@ func (s *UserServiceServer) UpdateUser(req *userpb.UpdateUserRequest) (*userpb.R
 	return makeResponse(0, "OK", nil)
 }
 
-func (s *UserServiceServer) DeleteUser(req *userpb.DeleteUserRequest) (*userpb.Response, error) {
+func (s *UserServiceServer) DeleteUser(ctx context.Context, req *userpb.DeleteUserRequest) (*userpb.Response, error) {
 	if req.GetId() == 0 {
 		return makeResponse(401, "ID is required", nil)
 	}
@@ -137,7 +138,7 @@ func (s *UserServiceServer) DeleteUser(req *userpb.DeleteUserRequest) (*userpb.R
 	return makeResponse(0, "OK", nil)
 }
 
-func (s *UserServiceServer) ListUsers(_ *emptypb.Empty) (*userpb.Response, error) {
+func (s *UserServiceServer) ListUsers(ctx context.Context, _ *emptypb.Empty) (*userpb.Response, error) {
 	var users []model.User
 	if err := s.DB.Find(&users).Error; err != nil {
 		return makeResponse(500, "Database error", nil)
