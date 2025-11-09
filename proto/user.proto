@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package userpb;
+
+option go_package = "proto/userpb";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+
+message Response {
+  int32 code = 1;
+  string message = 2;
+  optional google.protobuf.Value data = 3;
+}
+
+message User {
+  int64 id = 1;
+  string name = 2;
+  string email = 3;
+  string created_at = 4;
+  string updated_at = 5;
+}
+
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
+}
+
+message GetUserRequest {
+  int64 id = 1;
+}
+
+message UpdateUserRequest {
+  int64 id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message DeleteUserRequest {
+  int64 id = 1;
+}
+
+service UserService {
+  rpc CreateUser(CreateUserRequest) returns (Response);
+  rpc GetUser(GetUserRequest) returns (Response);
+  rpc UpdateUser(UpdateUserRequest) returns (Response);
+  rpc DeleteUser(DeleteUserRequest) returns (Response);
+  rpc ListUsers(google.protobuf.Empty) returns (Response);
+}
